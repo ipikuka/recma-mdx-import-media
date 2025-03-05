@@ -1,5 +1,6 @@
 import type { Plugin } from "unified";
 import type { ImportDeclaration, Node, ObjectExpression, Program } from "estree";
+import type { JSXOpeningElement } from "estree-jsx";
 import { CONTINUE, EXIT, SKIP, visit } from "estree-util-visit";
 import GithubSlugger from "github-slugger";
 
@@ -32,9 +33,9 @@ function composeImportDeclarations(media: Record<string, string>): ImportDeclara
 /**
  * It is a recma plugin which transforms the esAST / esTree.
  *
- * This recma plugin turns media paths into imports for both markdown and html syntax in markdown / MDX
+ * This recma plugin turns media relative paths into imports for both markdown and html syntax in markdown / MDX
  *
- * It is working for only images for now, other assets will be added in next versions
+ * It is working for only images for now, other assets will be added in the next versions !
  *
  */
 const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
@@ -59,7 +60,7 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
 
       // A CallExpression has two arguments
       // We are looking for firstArgument is Literal or MemberExpression
-      // We are looking for seconsArgument is ObjectExpression
+      //                    secondArgument is ObjectExpression
 
       const firstArgument = node.arguments[0];
       const secondArgument = node.arguments[1];
@@ -121,18 +122,57 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
       return CONTINUE;
     });
 
-    // TODO: make it for jsx components as well
+    // make it for { jsx: true } as well
     visit(tree, (node) => {
       if (node.type !== "JSXElement") return CONTINUE;
+
+      let openingElement: JSXOpeningElement | undefined;
 
       if (node.openingElement.name.type === "JSXMemberExpression") {
         const jsxMemberExpression = node.openingElement.name;
 
         if (
           jsxMemberExpression.object.type === "JSXIdentifier" &&
-          jsxMemberExpression.object.name === "_components"
+          jsxMemberExpression.object.name === "_components" &&
+          jsxMemberExpression.property.type === "JSXIdentifier" &&
+          jsxMemberExpression.property.name === "img"
         ) {
-          // TODO: move forward
+          openingElement = node.openingElement;
+        }
+      } else if (node.openingElement.name.type === "JSXIdentifier") {
+        const jsxIdentifier = node.openingElement.name;
+
+        if (jsxIdentifier.name === "img") {
+          openingElement = node.openingElement;
+        }
+      }
+
+      if (openingElement) {
+        const attributeWithSrc = openingElement.attributes
+          .filter((attr) => attr.type === "JSXAttribute")
+          .find((attr) => attr.name.type === "JSXIdentifier" && attr.name.name === "src");
+
+        if (attributeWithSrc) {
+          // we are skipping attributeWithSrc.value.type is JSXSomething..
+          if (attributeWithSrc.value?.type === "Literal") {
+            const path = attributeWithSrc.value.value;
+
+            if (
+              typeof path === "string" &&
+              !/^[a-z]+:\/\/(?!\/)/i.test(path) && // protocol-like patterns
+              !path.startsWith("/") && // root-relative URLs
+              !/%7B[^%]+%7D/.test(path) // URL-encoded curly braced identifiers
+            ) {
+              if (!media[path]) {
+                media[path] = `${slugger.slug(path).replace(/-/g, "_")}$recmamdximport`;
+              }
+
+              attributeWithSrc.value = {
+                type: "JSXExpressionContainer",
+                expression: { type: "Identifier", name: media[path] },
+              };
+            }
+          }
         }
       }
 
@@ -141,15 +181,15 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
 
     // inserts import declarations for the media right before the function "_createMdxContent"
     visit(tree, (node, _, index, ancestors) => {
-      if (!index) return;
+      if (index === undefined) return;
 
       /* istanbul ignore next */
       if (ancestors.length !== 1) return SKIP;
 
       if (node.type !== "FunctionDeclaration") return SKIP;
 
-      // commented out because the first function is always "_createMdxContent"
-      // if (node.id.name !== "_createMdxContent") return SKIP;
+      /* istanbul ignore next */
+      if (node.id.name !== "_createMdxContent") return SKIP;
 
       if (tree.type === "Program") {
         tree["body"].splice(index, 0, ...composeImportDeclarations(media));
