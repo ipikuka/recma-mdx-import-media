@@ -335,6 +335,40 @@ describe("recma-mdx-import-media", () => {
   });
 
   // ******************************************
+  it("with plugin, output format is function-body, jsx is true", async () => {
+    const compiledSource = await compile(source, {
+      jsx: true,
+      outputFormat: "function-body",
+      recmaPlugins: [recmaMdxImportMedia],
+    });
+
+    expect(String(compiledSource)).toMatchInlineSnapshot(`
+      "/*@jsxRuntime automatic*/
+      /*@jsxImportSource react*/
+      "use strict";
+      import image1png$recmamdximport from "./image1.png";
+      import image2png$recmamdximport from "./image2.png";
+      import imagepng$recmamdximport from "./image.png";
+      function _createMdxContent(props) {
+        const _components = {
+          img: "img",
+          p: "p",
+          ...props.components
+        };
+        return <><_components.p><_components.img src={image1png$recmamdximport} alt="alt" /></_components.p>{"\\n"}<_components.p><_components.img src={image2png$recmamdximport} alt="alt" /></_components.p>{"\\n"}<_components.p><_components.img src="%7BimgSrc%7D" alt="alt" /></_components.p>{"\\n"}<_components.p><_components.img src="/image.png" alt="alt" /></_components.p>{"\\n"}<img src={image1png$recmamdximport} alt="alt" />{"\\n"}<img src={image2png$recmamdximport} alt="alt" />{"\\n"}<img src={imgSrc} alt="alt" />{"\\n"}<img src={imagepng$recmamdximport} alt="alt" />{"\\n"}<img src="/image.png" alt="alt" /></>;
+      }
+      function MDXContent(props = {}) {
+        const {wrapper: MDXLayout} = props.components || ({});
+        return MDXLayout ? <MDXLayout {...props}><_createMdxContent {...props} /></MDXLayout> : _createMdxContent(props);
+      }
+      return {
+        default: MDXContent
+      };
+      "
+    `);
+  });
+
+  // ******************************************
   it("without plugin, output format is program, jsx is true", async () => {
     const compiledSource = await compile(source, {
       jsx: true,
@@ -360,34 +394,32 @@ describe("recma-mdx-import-media", () => {
     `);
   });
 
-  // TODO: make it work for jsx as well
   // ******************************************
-  it("with plugin, output format is function-body, jsx is true", async () => {
+  it("with plugin, output format is program, jsx is true", async () => {
     const compiledSource = await compile(source, {
       jsx: true,
-      outputFormat: "function-body",
+      outputFormat: "program",
       recmaPlugins: [recmaMdxImportMedia],
     });
 
     expect(String(compiledSource)).toMatchInlineSnapshot(`
       "/*@jsxRuntime automatic*/
       /*@jsxImportSource react*/
-      "use strict";
+      import image1png$recmamdximport from "./image1.png";
+      import image2png$recmamdximport from "./image2.png";
+      import imagepng$recmamdximport from "./image.png";
       function _createMdxContent(props) {
         const _components = {
           img: "img",
           p: "p",
           ...props.components
         };
-        return <><_components.p><_components.img src="./image1.png" alt="alt" /></_components.p>{"\\n"}<_components.p><_components.img src="./image2.png" alt="alt" /></_components.p>{"\\n"}<_components.p><_components.img src="%7BimgSrc%7D" alt="alt" /></_components.p>{"\\n"}<_components.p><_components.img src="/image.png" alt="alt" /></_components.p>{"\\n"}<img src="./image1.png" alt="alt" />{"\\n"}<img src="./image2.png" alt="alt" />{"\\n"}<img src={imgSrc} alt="alt" />{"\\n"}<img src="./image.png" alt="alt" />{"\\n"}<img src="/image.png" alt="alt" /></>;
+        return <><_components.p><_components.img src={image1png$recmamdximport} alt="alt" /></_components.p>{"\\n"}<_components.p><_components.img src={image2png$recmamdximport} alt="alt" /></_components.p>{"\\n"}<_components.p><_components.img src="%7BimgSrc%7D" alt="alt" /></_components.p>{"\\n"}<_components.p><_components.img src="/image.png" alt="alt" /></_components.p>{"\\n"}<img src={image1png$recmamdximport} alt="alt" />{"\\n"}<img src={image2png$recmamdximport} alt="alt" />{"\\n"}<img src={imgSrc} alt="alt" />{"\\n"}<img src={imagepng$recmamdximport} alt="alt" />{"\\n"}<img src="/image.png" alt="alt" /></>;
       }
-      function MDXContent(props = {}) {
+      export default function MDXContent(props = {}) {
         const {wrapper: MDXLayout} = props.components || ({});
         return MDXLayout ? <MDXLayout {...props}><_createMdxContent {...props} /></MDXLayout> : _createMdxContent(props);
       }
-      return {
-        default: MDXContent
-      };
       "
     `);
   });
