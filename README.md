@@ -14,15 +14,29 @@ This package is a **[unified][unified]** (**[recma][recma]**) plugin **that turn
 
 ## When should I use this?
 
-If you're working with MDX and want to include **media with relative path** using markdown or html syntax, such as:
+**`recma-mdx-import-media`** is working **for only images for now**, other assets will be added in next versions !
+
+If you're working with MDX and want to include **media/asset with relative path** using **markdown syntax**, without providing an import statement, such as:
 
 ```markdown
 ![alt](./image.png)
 
-<img src="./image.png" alt="alt" />
+![alt](../blog-assets/image.png)
 ```
 
-You might run into issues because bundlers like Webpack and Vite don't natively recognize these references—they only handle imports. **`recma-mdx-import-media`** bridges that gap by converting media relative references into import declarations in compiled MDX source, ensuring bundlers can process them correctly, for both **markdown** and **HTML** syntax.
+If you're working with MDX and want to include **media/asset with relative path** using **html syntax**, without providing an import statement, such as:
+
+```markdown
+<img src="./image.png" alt="alt" />
+
+<img src="../blog-assets/image.png" alt="alt" />
+```
+
+Because, **`recma-mdx-import-media`** creates *import statements* and assign the *identifier* into proper element in the compiled source.
+
+**`recma-mdx-import-media`** only processes relative paths (starts with `./` or `../`); leaving protocol-like patterns (like `http://`), root-relative URLs (like `/pathname`), and absolute paths (`file:///`) unchanged.
+
+You might run into issues because bundlers like Webpack and Vite don't natively recognize these references (.png, .jpeg etc.)—they only handle imports. **`recma-mdx-import-media`** bridges that gap by converting media relative references into import declarations in compiled MDX source, ensuring bundlers can process them correctly, for both **markdown** and **HTML** syntax.
 
 ## Installation
 
@@ -117,14 +131,14 @@ use(recmaMdxImportMedia, { excludeSyntax: ["html"] } as ImportMediaOptions);
 Now, **`<img />`** like **html syntax** will be excluded.
 
 ```javascript
-use(recmaMdxImportMedia, { excludeSyntax: ["jsx"] } as ImportMediaOptions);
+use(recmaMdxImportMedia, { excludeSyntax: ["markdown"] } as ImportMediaOptions);
 ```
 Now, **`![]())`** like **markdown syntax** will be excluded.
 
 ```javascript
-use(recmaMdxImportMedia, { excludeSyntax: ["jsx", "markdown"] } as ImportMediaOptions);
+use(recmaMdxImportMedia, { excludeSyntax: ["html", "markdown"] } as ImportMediaOptions);
 ```
-Now, both **markdown and html syntax** will be excluded. **The plugin becomes effectless.**
+Now, both **html and markdown syntax** will be excluded. **The plugin becomes effectless.**
 
 ## Syntax tree
 
@@ -179,7 +193,7 @@ I like to contribute the Unified / Remark / MDX ecosystem, so I recommend you to
 - [`recma-mdx-change-imports`](https://www.npmjs.com/package/recma-mdx-change-imports)
   – Recma plugin to convert import declarations for assets and media with relative links into variable declarations with string URLs, enabling direct asset URL resolution in compiled MDX.
 - [`recma-mdx-import-media`](https://www.npmjs.com/package/recma-mdx-import-media)
-  – Recma plugin to turn media relative paths into import declarations for both markdown and html syntax in .
+  – Recma plugin to turn media relative paths into import declarations for both markdown and html syntax in MDX.
 
 ## License
 
