@@ -13,7 +13,8 @@
     "lint": "eslint .",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.cjs --coverage",
     "test:main": "NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.cjs main.spec.ts",
-    "test:test": "NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.cjs test1.spec.ts",
+    "test:test1": "NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.cjs test1.spec.ts",
+    "test:test2": "NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.cjs test2.spec.ts",
     "prepack": "npm run build",
     "prepublishOnly": "npm test && npm run format"
   },
@@ -71,6 +72,7 @@
   },
   "dependencies": {
     "@types/estree": "^1.0.6",
+    "@types/estree-jsx": "^1.0.5",
     "estree-util-visit": "^2.0.0",
     "github-slugger": "^2.0.0"
   },
