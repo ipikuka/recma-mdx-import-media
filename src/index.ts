@@ -101,7 +101,7 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
         if (propertyWithSrc) {
           // we are skipping propertyWithSrc.value.type is Identifier
           if (propertyWithSrc.value.type === "Literal") {
-            const path = propertyWithSrc.value.value;
+            let path = propertyWithSrc.value.value;
 
             if (
               typeof path === "string" &&
@@ -109,6 +109,8 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
               !path.startsWith("/") && // root-relative URLs
               !/%7B[^%]+%7D/.test(path) // URL-encoded curly braced identifiers
             ) {
+              if (!path.startsWith(".")) path = "./" + path;
+
               if (!media[path]) {
                 media[path] = `${slugger.slug(path).replace(/-/g, "_")}$recmamdximport`;
               }
@@ -155,7 +157,7 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
         if (attributeWithSrc) {
           // we are skipping attributeWithSrc.value.type is JSXSomething..
           if (attributeWithSrc.value?.type === "Literal") {
-            const path = attributeWithSrc.value.value;
+            let path = attributeWithSrc.value.value;
 
             if (
               typeof path === "string" &&
@@ -163,6 +165,8 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
               !path.startsWith("/") && // root-relative URLs
               !/%7B[^%]+%7D/.test(path) // URL-encoded curly braced identifiers
             ) {
+              if (!path.startsWith(".")) path = "./" + path;
+
               if (!media[path]) {
                 media[path] = `${slugger.slug(path).replace(/-/g, "_")}$recmamdximport`;
               }
