@@ -12,6 +12,23 @@ const DEFAULT_SETTINGS: ImportMediaOptions = {
   excludeSyntax: [],
 };
 
+const srcAttributes: Record<string, "src"> = {
+  img: "src",
+  video: "src",
+  audio: "src",
+  source: "src",
+  embed: "src",
+  track: "src",
+  input: "src",
+  script: "src",
+};
+
+const tagsWithSrc = Object.keys(srcAttributes);
+
+// TODO: handle video poster
+// TODO: handle srcset attributes
+// TODO: handle query and hashes in the paths
+
 /**
  *
  * compose import declarations for media
@@ -35,7 +52,7 @@ function composeImportDeclarations(media: Record<string, string>): ImportDeclara
  *
  * This recma plugin turns media relative paths into imports for both markdown and html syntax in markdown / MDX
  *
- * It is working for only images for now, other assets will be added in the next versions !
+ * It is working for only "src" attributes for now, "srcset" will be added in the next versions !
  *
  */
 const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
@@ -68,7 +85,11 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
       let objectExpression: ObjectExpression | undefined;
 
       if (!settings.excludeSyntax.includes("html")) {
-        if (firstArgument.type === "Literal" && firstArgument.value === "img") {
+        if (
+          firstArgument.type === "Literal" &&
+          typeof firstArgument.value === "string" &&
+          tagsWithSrc.includes(firstArgument.value)
+        ) {
           if (secondArgument.type === "ObjectExpression") {
             objectExpression = secondArgument;
           }
@@ -83,7 +104,7 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
           ) {
             if (
               firstArgument.property.type === "Identifier" &&
-              firstArgument.property.name === "img"
+              tagsWithSrc.includes(firstArgument.property.name)
             ) {
               if (secondArgument.type === "ObjectExpression") {
                 objectExpression = secondArgument;
@@ -137,14 +158,14 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
           jsxMemberExpression.object.type === "JSXIdentifier" &&
           jsxMemberExpression.object.name === "_components" &&
           jsxMemberExpression.property.type === "JSXIdentifier" &&
-          jsxMemberExpression.property.name === "img"
+          tagsWithSrc.includes(jsxMemberExpression.property.name)
         ) {
           openingElement = node.openingElement;
         }
       } else if (node.openingElement.name.type === "JSXIdentifier") {
         const jsxIdentifier = node.openingElement.name;
 
-        if (jsxIdentifier.name === "img") {
+        if (tagsWithSrc.includes(jsxIdentifier.name)) {
           openingElement = node.openingElement;
         }
       }
