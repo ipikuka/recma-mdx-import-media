@@ -14,7 +14,7 @@ This package is a **[unified][unified]** (**[recma][recma]**) plugin **that turn
 
 ## When should I use this?
 
-**`recma-mdx-import-media`** is working **for only images for now**, other assets will be added in next versions !
+**`recma-mdx-import-media`** is working **for only `src` attribute for now**, `srcset` will be added in next versions !
 
 If you're working with MDX and want to include **media/asset with relative path** using **markdown syntax**, without providing an import statement, such as:
 
@@ -34,7 +34,7 @@ If you're working with MDX and want to include **media/asset with relative path*
 
 Because, **`recma-mdx-import-media`** creates *import statements* and assign the *identifier* into proper element in the compiled source.
 
-**`recma-mdx-import-media`** only processes relative paths (starts with `./` or `../`); leaving protocol-like patterns (like `http://`), root-relative URLs (like `/pathname`), and absolute paths (`file:///`) unchanged.
+**`recma-mdx-import-media`** only processes relative paths (starts with `./` or `../` or direct file name); leaving protocol-like patterns (like `http://`), root-relative URLs (like `/pathname`), and absolute paths (`file:///`) unchanged.
 
 You might run into issues because bundlers like Webpack and Vite don't natively recognize these references (.png, .jpeg etc.)—they only handle imports. **`recma-mdx-import-media`** bridges that gap by converting media relative references into import declarations in compiled MDX source, ensuring bundlers can process them correctly, for both **markdown** and **HTML** syntax.
 
@@ -110,10 +110,25 @@ function _createMdxContent(props) {
 }
 // ...
 ```
+This is roughly equivalent with:
+```js
+import imagepng$recmamdximport from "./image.png";
+import imagepng_1$recmamdximport from "../../image.png";
+
+export default function MDXContent() {
+  return (
+    <p>
+      <img alt="alt" src={imagepng$recmamdximport} />
+      <img alt="alt" src={imagepng_1$recmamdximport} />
+    </p>
+  )
+}
+```
+If you want to resolve the relative paths (starts with **`./`** or **`../`**) of the assets for further process, you are recommended to use **[`recma-mdx-change-imports`](https://github.com/ipikuka/recma-mdx-change-imports)**.
 
 ## Options
 
-All options are optional.
+All options are optional and have default values.
 
 ```typescript
 export type ImportMediaOptions = {
@@ -183,6 +198,8 @@ I like to contribute the Unified / Remark / MDX ecosystem, so I recommend you to
   – Rehype plugin to add language information as a property to `pre` element
 - [`rehype-highlight-code-lines`](https://www.npmjs.com/package/rehype-highlight-code-lines)
   – Rehype plugin to add line numbers to code blocks and allow highlighting of desired code lines
+- [`rehype-code-meta`](https://www.npmjs.com/package/rehype-code-meta)
+  – Rehype plugin to copy `code.data.meta` to `code.properties.metastring`
 
 ### My Recma Plugins
 
@@ -194,6 +211,8 @@ I like to contribute the Unified / Remark / MDX ecosystem, so I recommend you to
   – Recma plugin to convert import declarations for assets and media with relative links into variable declarations with string URLs, enabling direct asset URL resolution in compiled MDX.
 - [`recma-mdx-import-media`](https://www.npmjs.com/package/recma-mdx-import-media)
   – Recma plugin to turn media relative paths into import declarations for both markdown and html syntax in MDX.
+- [`recma-mdx-import-react`](https://www.npmjs.com/package/recma-mdx-import-react)
+  – Recma plugin to ensure getting `React` instance from the arguments and to make the runtime props `{React, jsx, jsxs, jsxDev, Fragment}` is available in the dynamically imported components in the compiled source of MDX.
 
 ## License
 
