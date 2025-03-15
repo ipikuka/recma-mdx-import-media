@@ -12,20 +12,21 @@ const DEFAULT_SETTINGS: ImportMediaOptions = {
   excludeSyntax: [],
 };
 
-const srcAttributes: Record<string, "src"> = {
-  img: "src",
-  video: "src",
-  audio: "src",
-  source: "src",
-  embed: "src",
-  track: "src",
-  input: "src",
-  script: "src",
+type TargetTag = "img" | "video" | "audio" | "source" | "embed" | "track" | "input" | "script";
+
+const MapOfTagAttribute: Record<TargetTag, string[]> = {
+  img: ["src"],
+  video: ["src", "poster"],
+  audio: ["src"],
+  source: ["src"],
+  embed: ["src"],
+  track: ["src"],
+  input: ["src"],
+  script: ["src"],
 };
 
-const tagsWithSrc = Object.keys(srcAttributes);
+const targetTags = Object.keys(MapOfTagAttribute);
 
-// TODO: handle video poster
 // TODO: handle srcset attributes
 // TODO: handle query and hashes in the paths
 
@@ -83,15 +84,17 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
       const secondArgument = node.arguments[1];
 
       let objectExpression: ObjectExpression | undefined;
+      let currentTag: TargetTag;
 
       if (!settings.excludeSyntax.includes("html")) {
         if (
           firstArgument.type === "Literal" &&
           typeof firstArgument.value === "string" &&
-          tagsWithSrc.includes(firstArgument.value)
+          targetTags.includes(firstArgument.value)
         ) {
           if (secondArgument.type === "ObjectExpression") {
             objectExpression = secondArgument;
+            currentTag = firstArgument.value as TargetTag;
           }
         }
       }
@@ -104,10 +107,11 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
           ) {
             if (
               firstArgument.property.type === "Identifier" &&
-              tagsWithSrc.includes(firstArgument.property.name)
+              targetTags.includes(firstArgument.property.name)
             ) {
               if (secondArgument.type === "ObjectExpression") {
                 objectExpression = secondArgument;
+                currentTag = firstArgument.property.name as TargetTag;
               }
             }
           }
@@ -115,14 +119,18 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
       }
 
       if (objectExpression) {
-        const propertyWithSrc = objectExpression.properties
-          .filter((prop) => prop.type === "Property")
-          .find((prop) => "name" in prop.key && prop.key.name === "src");
+        const properties = objectExpression.properties
+          .filter((property) => property.type === "Property")
+          .filter(
+            (property) =>
+              "name" in property.key &&
+              MapOfTagAttribute[currentTag].includes(property.key.name),
+          );
 
-        if (propertyWithSrc) {
-          // we are skipping propertyWithSrc.value.type is Identifier
-          if (propertyWithSrc.value.type === "Literal") {
-            let path = propertyWithSrc.value.value;
+        properties.forEach((property) => {
+          // we are skipping "property.value.type" is Identifier
+          if (property.value.type === "Literal") {
+            let path = property.value.value;
 
             if (
               typeof path === "string" &&
@@ -136,10 +144,10 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
                 media[path] = `${slugger.slug(path).replace(/-/g, "_")}$recmamdximport`;
               }
 
-              propertyWithSrc.value = { type: "Identifier", name: media[path] };
+              property.value = { type: "Identifier", name: media[path] };
             }
           }
-        }
+        });
       }
 
       return CONTINUE;
@@ -150,6 +158,7 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
       if (node.type !== "JSXElement") return CONTINUE;
 
       let openingElement: JSXOpeningElement | undefined;
+      let currentTag: TargetTag;
 
       if (node.openingElement.name.type === "JSXMemberExpression") {
         const jsxMemberExpression = node.openingElement.name;
@@ -158,27 +167,33 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
           jsxMemberExpression.object.type === "JSXIdentifier" &&
           jsxMemberExpression.object.name === "_components" &&
           jsxMemberExpression.property.type === "JSXIdentifier" &&
-          tagsWithSrc.includes(jsxMemberExpression.property.name)
+          targetTags.includes(jsxMemberExpression.property.name)
         ) {
           openingElement = node.openingElement;
+          currentTag = jsxMemberExpression.property.name as TargetTag;
         }
       } else if (node.openingElement.name.type === "JSXIdentifier") {
         const jsxIdentifier = node.openingElement.name;
 
-        if (tagsWithSrc.includes(jsxIdentifier.name)) {
+        if (targetTags.includes(jsxIdentifier.name)) {
           openingElement = node.openingElement;
+          currentTag = jsxIdentifier.name as TargetTag;
         }
       }
 
       if (openingElement) {
-        const attributeWithSrc = openingElement.attributes
+        const jsxAttributes = openingElement.attributes
           .filter((attr) => attr.type === "JSXAttribute")
-          .find((attr) => attr.name.type === "JSXIdentifier" && attr.name.name === "src");
+          .filter(
+            (attr) =>
+              attr.name.type === "JSXIdentifier" &&
+              MapOfTagAttribute[currentTag].includes(attr.name.name),
+          );
 
-        if (attributeWithSrc) {
-          // we are skipping attributeWithSrc.value.type is JSXSomething..
-          if (attributeWithSrc.value?.type === "Literal") {
-            let path = attributeWithSrc.value.value;
+        jsxAttributes.forEach((jsxAttribute) => {
+          // we are skipping "jsxAttribute.value.type" is JSXSomething..
+          if (jsxAttribute.value?.type === "Literal") {
+            let path = jsxAttribute.value.value;
 
             if (
               typeof path === "string" &&
@@ -192,13 +207,13 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
                 media[path] = `${slugger.slug(path).replace(/-/g, "_")}$recmamdximport`;
               }
 
-              attributeWithSrc.value = {
+              jsxAttribute.value = {
                 type: "JSXExpressionContainer",
                 expression: { type: "Identifier", name: media[path] },
               };
             }
           }
-        }
+        });
       }
 
       return CONTINUE;

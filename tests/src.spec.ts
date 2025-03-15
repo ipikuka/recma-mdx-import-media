@@ -132,6 +132,7 @@ describe("recma-mdx-import-media, src attributes other than <img />", () => {
       import imagejpg$recmamdximport from "./image.jpg";
       import videowebm$recmamdximport from "./video.webm";
       import videompg$recmamdximport from "./video.mpg";
+      import videopng$recmamdximport from "./video.png";
       import videovtt$recmamdximport from "./video.vtt";
       import scriptjs$recmamdximport from "./script.js";
       import buttongif$recmamdximport from "./button.gif";
@@ -176,7 +177,7 @@ describe("recma-mdx-import-media, src attributes other than <img />", () => {
             })]
           }), "\\n", _jsx("video", {
             src: videowebm$recmamdximport,
-            poster: "video.png",
+            poster: videopng$recmamdximport,
             children: _jsx("track", {
               kind: "captions",
               srclang: "en",
@@ -257,6 +258,7 @@ describe("recma-mdx-import-media, src attributes other than <img />", () => {
       import imagejpg$recmamdximport from "./image.jpg";
       import videowebm$recmamdximport from "./video.webm";
       import videompg$recmamdximport from "./video.mpg";
+      import videopng$recmamdximport from "./video.png";
       import videovtt$recmamdximport from "./video.vtt";
       import scriptjs$recmamdximport from "./script.js";
       import buttongif$recmamdximport from "./button.gif";
@@ -265,7 +267,7 @@ describe("recma-mdx-import-media, src attributes other than <img />", () => {
           p: "p",
           ...props.components
         };
-        return <><img src={imagepng$recmamdximport} width="60" height="60" />{"\\n"}<audio controls><source src={audioogg$recmamdximport} type="audio/ogg" /><source src={audiomp3$recmamdximport} type="audio/mpeg" /><_components.p>{"Your browser does not support the audio element."}</_components.p></audio>{"\\n"}<embed type="video/webm" src={videomp4$recmamdximport} />{"\\n"}<embed type="image/jpg" src={imagejpg$recmamdximport} width="60" height="60" />{"\\n"}<video><source src={videowebm$recmamdximport} type="video/webm" /><source src={videompg$recmamdximport} type="video/mp4" /><_components.p>{"Your browser does not support the video element."}</_components.p></video>{"\\n"}<video src={videowebm$recmamdximport} poster="video.png"><track kind="captions" srclang="en" src={videovtt$recmamdximport} /></video>{"\\n"}<script src={scriptjs$recmamdximport} />{"\\n"}<input type="image" src={buttongif$recmamdximport} alt="Submit" width="48" height="48" /></>;
+        return <><img src={imagepng$recmamdximport} width="60" height="60" />{"\\n"}<audio controls><source src={audioogg$recmamdximport} type="audio/ogg" /><source src={audiomp3$recmamdximport} type="audio/mpeg" /><_components.p>{"Your browser does not support the audio element."}</_components.p></audio>{"\\n"}<embed type="video/webm" src={videomp4$recmamdximport} />{"\\n"}<embed type="image/jpg" src={imagejpg$recmamdximport} width="60" height="60" />{"\\n"}<video><source src={videowebm$recmamdximport} type="video/webm" /><source src={videompg$recmamdximport} type="video/mp4" /><_components.p>{"Your browser does not support the video element."}</_components.p></video>{"\\n"}<video src={videowebm$recmamdximport} poster={videopng$recmamdximport}><track kind="captions" srclang="en" src={videovtt$recmamdximport} /></video>{"\\n"}<script src={scriptjs$recmamdximport} />{"\\n"}<input type="image" src={buttongif$recmamdximport} alt="Submit" width="48" height="48" /></>;
       }
       function MDXContent(props = {}) {
         const {wrapper: MDXLayout} = props.components || ({});
