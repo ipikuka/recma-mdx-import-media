@@ -40,6 +40,31 @@ describe("recma-mdx-import-media, output is function-body", () => {
   });
 
   // ******************************************
+  it("markdown syntax multiple", async () => {
+    const source = dedent`
+      ![alt](image.gif)
+
+      ![alt](image.jpg)
+
+      ![alt](image.png)
+
+      ![alt](image.svg)
+    `;
+
+    const compiledSource = await compile(source, {
+      outputFormat: "function-body",
+      recmaPlugins: [recmaMdxImportMedia],
+    });
+
+    expect(String(compiledSource)).toContain(dedent`
+      import imagegif$recmamdximport from "./image.gif";
+      import imagejpg$recmamdximport from "./image.jpg";
+      import imagepng$recmamdximport from "./image.png";
+      import imagesvg$recmamdximport from "./image.svg";
+    `);
+  });
+
+  // ******************************************
   it("html syntax", async () => {
     const source = dedent`
       <img src="./image.png" alt="alt" />
@@ -71,6 +96,31 @@ describe("recma-mdx-import-media, output is function-body", () => {
     expect(String(compiledSource)).toContain(dedent`
       import imagepng$recmamdximport from "./image.png";
       import imagepng_1$recmamdximport from "../../image.png";
+    `);
+  });
+
+  // ******************************************
+  it("html syntax multiple", async () => {
+    const source = dedent`
+      <img src="image.gif" alt="alt" />
+
+      <img src="image.jpg" alt="alt" />
+
+      <img src="image.png" alt="alt" />
+
+      <img src="image.svg" alt="alt" />
+    `;
+
+    const compiledSource = await compile(source, {
+      outputFormat: "function-body",
+      recmaPlugins: [recmaMdxImportMedia],
+    });
+
+    expect(String(compiledSource)).toContain(dedent`
+      import imagegif$recmamdximport from "./image.gif";
+      import imagejpg$recmamdximport from "./image.jpg";
+      import imagepng$recmamdximport from "./image.png";
+      import imagesvg$recmamdximport from "./image.svg";
     `);
   });
 
