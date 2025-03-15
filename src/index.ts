@@ -59,6 +59,14 @@ function composeImportDeclarations(media: Record<string, string>): ImportDeclara
 const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
   const settings = Object.assign({}, DEFAULT_SETTINGS, options) as Required<ImportMediaOptions>;
 
+  const isTargetPath = (
+    path: string | number | bigint | boolean | RegExp | null | undefined,
+  ): path is string =>
+    typeof path === "string" &&
+    !/^[a-z]+:\/\/(?!\/)/i.test(path) && // protocol-like patterns
+    !path.startsWith("/") && // root-relative URLs
+    !/%7B[^%]+%7D/.test(path); // URL-encoded curly braced identifiers
+
   return (tree: Node) => {
     const media: Record<string, string> = {};
     const slugger = new GithubSlugger();
@@ -132,13 +140,8 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
           if (property.value.type === "Literal") {
             let path = property.value.value;
 
-            if (
-              typeof path === "string" &&
-              !/^[a-z]+:\/\/(?!\/)/i.test(path) && // protocol-like patterns
-              !path.startsWith("/") && // root-relative URLs
-              !/%7B[^%]+%7D/.test(path) // URL-encoded curly braced identifiers
-            ) {
-              if (!path.startsWith(".")) path = "./" + path;
+            if (isTargetPath(path)) {
+              path = path.startsWith(".") ? path : `./${path}`;
 
               if (!media[path]) {
                 media[path] = `${slugger.slug(path).replace(/-/g, "_")}$recmamdximport`;
@@ -195,13 +198,8 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
           if (jsxAttribute.value?.type === "Literal") {
             let path = jsxAttribute.value.value;
 
-            if (
-              typeof path === "string" &&
-              !/^[a-z]+:\/\/(?!\/)/i.test(path) && // protocol-like patterns
-              !path.startsWith("/") && // root-relative URLs
-              !/%7B[^%]+%7D/.test(path) // URL-encoded curly braced identifiers
-            ) {
-              if (!path.startsWith(".")) path = "./" + path;
+            if (isTargetPath(path)) {
+              path = path.startsWith(".") ? path : `./${path}`;
 
               if (!media[path]) {
                 media[path] = `${slugger.slug(path).replace(/-/g, "_")}$recmamdximport`;
