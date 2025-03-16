@@ -28,7 +28,8 @@ const MapOfTagAttribute: Record<TargetTag, string[]> = {
 const targetTags = Object.keys(MapOfTagAttribute);
 
 // TODO: handle srcset attributes
-// TODO: handle query and hashes in the paths
+// TODO: set an option to keep query and hashes (metadata) in the Urls but strip from file name in the import
+//       İF NOT KEEP ask a user to kep it in the data-metadata, keep always metadata in srcset
 
 /**
  *
