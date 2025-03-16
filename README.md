@@ -14,8 +14,6 @@ This package is a **[unified][unified]** (**[recma][recma]**) plugin **that turn
 
 ## When should I use this?
 
-**`recma-mdx-import-media`** is working **for only `src` attribute for now**, `srcset` will be added in next versions !
-
 If you're working with MDX and want to include **media/asset with relative path** using **markdown syntax**, without providing an import statement, such as:
 
 ```markdown
@@ -37,6 +35,10 @@ Because, **`recma-mdx-import-media`** creates *import statements* and assign the
 **`recma-mdx-import-media`** only processes relative paths (starts with `./` or `../` or direct file name); leaving protocol-like patterns (like `http://`), root-relative URLs (like `/pathname`), and absolute paths (`file:///`) unchanged.
 
 You might run into issues because bundlers like Webpack and Vite don't natively recognize these references (.png, .jpeg etc.)—they only handle imports. **`recma-mdx-import-media`** bridges that gap by converting media relative references into import declarations in compiled MDX source, ensuring bundlers can process them correctly, for both **markdown** and **HTML** syntax.
+
+**"srcset" is not handled yet, it will be added in the next versions !**
+
+The meta information (`#hash` and `?querystring`) in the relative path is stripped out in the import statement, but the meta information is added as a property into the asset as **`data-meta`**.
 
 ## Installation
 

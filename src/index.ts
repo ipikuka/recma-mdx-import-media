@@ -27,9 +27,7 @@ const MapOfTagAttribute: Record<TargetTag, string[]> = {
 
 const targetTags = Object.keys(MapOfTagAttribute);
 
-// TODO: handle srcset attributes
-// TODO: set an option to keep query and hashes (metadata) in the Urls but strip from file name in the import
-//       İF NOT KEEP ask a user to kep it in the data-metadata, keep always metadata in srcset
+// TODO: handle "srcset" attribute
 
 /**
  *
@@ -54,7 +52,7 @@ function composeImportDeclarations(media: Record<string, string>): ImportDeclara
  *
  * This recma plugin turns media relative paths into imports for both markdown and html syntax in markdown / MDX
  *
- * It is working for only "src" attributes for now, "srcset" will be added in the next versions !
+ * "srcset" is not handled yet, it will be added in the next versions !
  *
  */
 const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
@@ -67,6 +65,27 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
     !/^[a-z]+:\/\/(?!\/)/i.test(path) && // protocol-like patterns
     !path.startsWith("/") && // root-relative URLs
     !/%7B[^%]+%7D/.test(path); // URL-encoded curly braced identifiers
+
+  function getPath(value: string): [string, string] {
+    value = value.startsWith(".") ? value : `./${value}`;
+
+    const hashIndex = value.indexOf("#");
+    const queryIndex = value.indexOf("?");
+
+    let minIndex: number;
+    if (hashIndex === -1) {
+      minIndex = queryIndex;
+    } else if (queryIndex === -1) {
+      minIndex = hashIndex;
+    } else {
+      minIndex = Math.min(hashIndex, queryIndex);
+    }
+
+    const meta = minIndex === -1 ? "" : value.slice(minIndex);
+    const path = minIndex === -1 ? value : value.slice(0, minIndex);
+
+    return [path, meta];
+  }
 
   return (tree: Node) => {
     const media: Record<string, string> = {};
@@ -139,16 +158,28 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
         properties.forEach((property) => {
           // we are skipping "property.value.type" is Identifier
           if (property.value.type === "Literal") {
-            let path = property.value.value;
+            const value = property.value.value;
 
-            if (isTargetPath(path)) {
-              path = path.startsWith(".") ? path : `./${path}`;
+            if (isTargetPath(value)) {
+              const [path, meta] = getPath(value);
 
               if (!media[path]) {
                 media[path] = `${slugger.slug(path).replace(/-/g, "_")}$recmamdximport`;
               }
 
               property.value = { type: "Identifier", name: media[path] };
+
+              if (meta) {
+                objectExpression.properties.push({
+                  type: "Property",
+                  key: { type: "Identifier", name: "data-meta" },
+                  value: { type: "Literal", value: meta },
+                  kind: "init",
+                  method: false,
+                  shorthand: false,
+                  computed: false,
+                });
+              }
             }
           }
         });
@@ -197,10 +228,10 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
         jsxAttributes.forEach((jsxAttribute) => {
           // we are skipping "jsxAttribute.value.type" is JSXSomething..
           if (jsxAttribute.value?.type === "Literal") {
-            let path = jsxAttribute.value.value;
+            const value = jsxAttribute.value.value;
 
-            if (isTargetPath(path)) {
-              path = path.startsWith(".") ? path : `./${path}`;
+            if (isTargetPath(value)) {
+              const [path, meta] = getPath(value);
 
               if (!media[path]) {
                 media[path] = `${slugger.slug(path).replace(/-/g, "_")}$recmamdximport`;
@@ -210,6 +241,14 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
                 type: "JSXExpressionContainer",
                 expression: { type: "Identifier", name: media[path] },
               };
+
+              if (meta) {
+                openingElement.attributes.push({
+                  type: "JSXAttribute",
+                  name: { type: "JSXIdentifier", name: "data-meta" },
+                  value: { type: "Literal", value: meta },
+                });
+              }
             }
           }
         });

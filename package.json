@@ -18,6 +18,7 @@
     "test:test1": "NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.cjs test1.spec.ts",
     "test:test2": "NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.cjs test2.spec.ts",
     "test:src": "NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.cjs src.spec.ts",
+    "test:meta": "NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.cjs meta.spec.ts",
     "prepack": "npm run build",
     "prepublishOnly": "npm test && npm run format"
   },
