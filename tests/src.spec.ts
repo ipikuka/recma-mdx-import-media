@@ -144,6 +144,8 @@ describe("recma-mdx-import-media, src attributes other than <img />", () => {
       ""use strict";
       const {Fragment: _Fragment, jsx: _jsx, jsxs: _jsxs} = arguments[0];
       import imagepng$recmamdximport from "./image.png";
+      import image1jpg$recmamdximport from "./image1.jpg";
+      import image2jpg$recmamdximport from "./image2.jpg";
       import imagejpg$recmamdximport from "./image.jpg";
       import audioogg$recmamdximport from "./audio.ogg";
       import audiomp3$recmamdximport from "./audio.mp3";
@@ -167,10 +169,10 @@ describe("recma-mdx-import-media, src attributes other than <img />", () => {
           }), "\\n", _jsxs("picture", {
             children: [_jsx("source", {
               media: "(min-width:650px)",
-              srcset: "image1.jpg"
+              srcset: image1jpg$recmamdximport
             }), _jsx("source", {
               media: "(min-width:465px)",
-              srcset: "image2.jpg"
+              srcset: image2jpg$recmamdximport
             }), _jsx("img", {
               src: imagejpg$recmamdximport,
               alt: "Flowers",
@@ -282,6 +284,8 @@ describe("recma-mdx-import-media, src attributes other than <img />", () => {
       /*@jsxImportSource react*/
       "use strict";
       import imagepng$recmamdximport from "./image.png";
+      import image1jpg$recmamdximport from "./image1.jpg";
+      import image2jpg$recmamdximport from "./image2.jpg";
       import imagejpg$recmamdximport from "./image.jpg";
       import audioogg$recmamdximport from "./audio.ogg";
       import audiomp3$recmamdximport from "./audio.mp3";
@@ -297,7 +301,7 @@ describe("recma-mdx-import-media, src attributes other than <img />", () => {
           p: "p",
           ...props.components
         };
-        return <><img src={imagepng$recmamdximport} width="60" height="60" />{"\\n"}<picture><source media="(min-width:650px)" srcset="image1.jpg" /><source media="(min-width:465px)" srcset="image2.jpg" /><img src={imagejpg$recmamdximport} alt="Flowers" style="width:auto;" /></picture>{"\\n"}<audio controls><source src={audioogg$recmamdximport} type="audio/ogg" /><source src={audiomp3$recmamdximport} type="audio/mpeg" /><_components.p>{"Your browser does not support the audio element."}</_components.p></audio>{"\\n"}<embed type="video/webm" src={videomp4$recmamdximport} />{"\\n"}<embed type="image/jpg" src={imagejpg$recmamdximport} width="60" height="60" />{"\\n"}<video><source src={videowebm$recmamdximport} type="video/webm" /><source src={videompg$recmamdximport} type="video/mp4" /><_components.p>{"Your browser does not support the video element."}</_components.p></video>{"\\n"}<video src={videowebm$recmamdximport} poster={videopng$recmamdximport}><track kind="captions" srclang="en" src={videovtt$recmamdximport} /></video>{"\\n"}<script src={scriptjs$recmamdximport} />{"\\n"}<input type="image" src={buttongif$recmamdximport} alt="Submit" width="48" height="48" /></>;
+        return <><img src={imagepng$recmamdximport} width="60" height="60" />{"\\n"}<picture><source media="(min-width:650px)" srcset={image1jpg$recmamdximport} /><source media="(min-width:465px)" srcset={image2jpg$recmamdximport} /><img src={imagejpg$recmamdximport} alt="Flowers" style="width:auto;" /></picture>{"\\n"}<audio controls><source src={audioogg$recmamdximport} type="audio/ogg" /><source src={audiomp3$recmamdximport} type="audio/mpeg" /><_components.p>{"Your browser does not support the audio element."}</_components.p></audio>{"\\n"}<embed type="video/webm" src={videomp4$recmamdximport} />{"\\n"}<embed type="image/jpg" src={imagejpg$recmamdximport} width="60" height="60" />{"\\n"}<video><source src={videowebm$recmamdximport} type="video/webm" /><source src={videompg$recmamdximport} type="video/mp4" /><_components.p>{"Your browser does not support the video element."}</_components.p></video>{"\\n"}<video src={videowebm$recmamdximport} poster={videopng$recmamdximport}><track kind="captions" srclang="en" src={videovtt$recmamdximport} /></video>{"\\n"}<script src={scriptjs$recmamdximport} />{"\\n"}<input type="image" src={buttongif$recmamdximport} alt="Submit" width="48" height="48" /></>;
       }
       function MDXContent(props = {}) {
         const {wrapper: MDXLayout} = props.components || ({});

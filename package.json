@@ -18,6 +18,7 @@
     "test:test1": "NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.cjs test1.spec.ts",
     "test:test2": "NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.cjs test2.spec.ts",
     "test:src": "NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.cjs src.spec.ts",
+    "test:srcset": "NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.cjs srcset.spec.ts",
     "test:meta": "NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.cjs meta.spec.ts",
     "prepack": "npm run build",
     "prepublishOnly": "npm test && npm run format"
@@ -59,6 +60,7 @@
     "@types/dedent": "^0.7.2",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.9",
+    "@types/parse-srcset": "^1.0.0",
     "dedent": "^1.5.3",
     "eslint": "^9.21.0",
     "eslint-config-prettier": "^10.0.2",
@@ -78,7 +80,8 @@
     "@types/estree": "^1.0.6",
     "@types/estree-jsx": "^1.0.5",
     "estree-util-visit": "^2.0.0",
-    "github-slugger": "^2.0.0"
+    "github-slugger": "^2.0.0",
+    "parse-srcset": "^1.0.2"
   },
   "peerDependencies": {
     "unified": "^11"

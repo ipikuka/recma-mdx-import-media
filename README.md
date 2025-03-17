@@ -36,9 +36,22 @@ Because, **`recma-mdx-import-media`** creates *import statements* and assign the
 
 You might run into issues because bundlers like Webpack and Vite don't natively recognize these references (.png, .jpeg etc.)—they only handle imports. **`recma-mdx-import-media`** bridges that gap by converting media relative references into import declarations in compiled MDX source, ensuring bundlers can process them correctly, for both **markdown** and **HTML** syntax.
 
-**"srcset" is not handled yet, it will be added in the next versions !**
+## The list of the tags and attributes that `recma-mdx-import-media` process
 
-The meta information (`#hash` and `?querystring`) in the relative path is stripped out in the import statement, but the meta information is added as a property into the asset as **`data-meta`**.
++ **`img`** --> **`src`**, **`srcset`**,
++ **`video`** --> : **`src`**, **`poster`**,
++ **`audio`** --> : **`src`**,
++ **`source`** --> : **`src`**, **`srcset`**,
++ **`embed`** --> : **`src`**,
++ **`track`** --> : **`src`**,
++ **`input[type="image"]`** --> : **`src`**,
++ **`script`** --> : **`src`**
+
+**`recma-mdx-import-media`** supports the **meta** information (`#hash` and `?querystring`) on the asset path.
+
+**During process, the meta information in the relative path is stripped out in the import statement.**
+
+In order you process the meta information for further process, it is added as a property into the asset as **`data-meta`** for `src` and `poster` attributes. but it preserved in `srcset` instead of passing it to **`data-meta`**.
 
 ## Installation
 

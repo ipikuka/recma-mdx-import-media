@@ -3,9 +3,6 @@ import dedent from "dedent";
 
 import recmaMdxImportMedia from "../src";
 
-// <img srcset="image.png#hash 2x, image.png#mash 4x" />
-// <img srcset="image.png?size=16 2x, image.png?size=32 4x" />
-
 describe("recma-mdx-import-media, path and meta", () => {
   const source = dedent`
     ![](image.png#hash)
