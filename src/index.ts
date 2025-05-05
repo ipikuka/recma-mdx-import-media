@@ -51,6 +51,7 @@ function composeImportDeclarations(media: Record<string, string>): ImportDeclara
       },
     ],
     source: { type: "Literal", value: path },
+    attributes: [],
   }));
 }
 
