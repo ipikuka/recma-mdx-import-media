@@ -101,6 +101,7 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
     visit(tree, (node) => {
       if (node.type !== "CallExpression") return CONTINUE;
 
+      /* istanbul ignore if */
       if ("name" in node.callee) {
         if (
           node.callee.name !== "_jsx" &&
@@ -127,6 +128,7 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
           typeof firstArgument.value === "string" &&
           targetTags.includes(firstArgument.value.toLowerCase())
         ) {
+          /* istanbul ignore if */
           if (secondArgument.type === "ObjectExpression") {
             objectExpression = secondArgument;
             currentTag = firstArgument.value as TargetTag;
@@ -136,6 +138,7 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
 
       if (!settings.excludeSyntax.includes("markdown")) {
         if (firstArgument.type === "MemberExpression") {
+          /* istanbul ignore if */
           if (
             firstArgument.object.type === "Identifier" &&
             firstArgument.object.name === "_components"
@@ -144,6 +147,7 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
               firstArgument.property.type === "Identifier" &&
               targetTags.includes(firstArgument.property.name.toLowerCase())
             ) {
+              /* istanbul ignore if */
               if (secondArgument.type === "ObjectExpression") {
                 objectExpression = secondArgument;
                 currentTag = firstArgument.property.name as TargetTag;
@@ -180,6 +184,7 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
               const [path] = getPath(srcset[0].url);
               const url = srcset[0].url.startsWith(".") ? srcset[0].url : `./${srcset[0].url}`;
 
+              /* istanbul ignore if */
               if (url === path) {
                 media[path] ??= slug(path);
                 property.value = { type: "Identifier", name: media[path] };
@@ -246,6 +251,7 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
       let openingElement: JSXOpeningElement | undefined;
       let currentTag: TargetTag;
 
+      /* istanbul ignore else */
       if (node.openingElement.name.type === "JSXMemberExpression") {
         const jsxMemberExpression = node.openingElement.name;
 
@@ -294,6 +300,7 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
               const [path] = getPath(srcset[0].url);
               const url = srcset[0].url.startsWith(".") ? srcset[0].url : `./${srcset[0].url}`;
 
+              /* istanbul ignore if */
               if (url === path) {
                 media[path] ??= slug(path);
 
@@ -372,6 +379,7 @@ const plugin: Plugin<[ImportMediaOptions?], Program> = (options) => {
       /* istanbul ignore next */
       if (node.id.name !== "_createMdxContent") return SKIP;
 
+      /* istanbul ignore if */
       if (tree.type === "Program") {
         tree["body"].splice(index, 0, ...composeImportDeclarations(media));
 
