@@ -14,27 +14,23 @@ This package is a **[unified][unified]** (**[recma][recma]**) plugin **that turn
 
 ## When should I use this?
 
-If you're working with MDX and want to include **media/asset with relative path** using **markdown syntax**, without providing an import statement, such as:
+You can use **`recma-mdx-import-media`** if you want to include **media/asset with relative path** using **markdown syntax** or **html syntax** in MDX, without providing an import statement, such as:
 
 ```markdown
 ![alt](./image.png)
 
-![alt](../blog-assets/image.png)
-```
-
-If you're working with MDX and want to include **media/asset with relative path** using **html syntax**, without providing an import statement, such as:
-
-```markdown
 <img src="./image.png" alt="alt" />
+
+![alt](../blog-assets/image.png)
 
 <img src="../blog-assets/image.png" alt="alt" />
 ```
 
-Because, **`recma-mdx-import-media`** creates *import statements* and assign the *identifier* into proper element in the compiled source.
+Because, **`recma-mdx-import-media`** creates *import statements* and assigns an *identifier* into proper element in the compiled source.
 
-**`recma-mdx-import-media`** only processes relative paths (starts with `./` or `../` or direct file name); leaving protocol-like patterns (like `http://`), root-relative URLs (like `/pathname`), and absolute paths (`file:///`) unchanged.
+**`recma-mdx-import-media`** only processes relative paths (starting with `./` or `../` or direct file name); leaving protocol-like patterns (like `http://`), root-relative URLs (like `/pathname`), and absolute paths (`file:///`) unchanged.
 
-You might run into issues because bundlers like Webpack and Vite don't natively recognize these references (.png, .jpeg etc.)—they only handle imports. **`recma-mdx-import-media`** bridges that gap by converting media relative references into import declarations in compiled MDX source, ensuring bundlers can process them correctly, for both **markdown** and **HTML** syntax.
+You might run into issues because bundlers like Webpack and Vite don't natively recognize these references (.png, .jpeg etc.), they only handle imports. **`recma-mdx-import-media`** bridges that gap by converting media relative references into import declarations in the compiled MDX source, ensuring bundlers can process them correctly, for both **markdown** and **HTML** syntax.
 
 ### The list of the tags and attributes that `recma-mdx-import-media` process
 
@@ -47,11 +43,11 @@ You might run into issues because bundlers like Webpack and Vite don't natively 
 + **`input[type="image"]`** --> **`src`**,
 + **`script`** --> **`src`**
 
-**`recma-mdx-import-media`** supports the **meta** information (`#hash` and `?querystring`) on the asset path.
+**`recma-mdx-import-media`** supports **meta** information (`#hash` and `?querystring`) on the asset path.
 
 **During process, the meta information in the relative path is stripped out in the import statement.**
 
-In order you process the meta information for further process, it is added as a property into the asset as **`data-meta`** for `src` and `poster` attributes. but it preserved in `srcset` instead of passing it to **`data-meta`**.
+In order you process the meta information for further process, it is added as a property into the asset as **`data-meta`** for `src` and `poster` attributes, but it preserved in `srcset` instead of passing it to **`data-meta`**.
 
 ## Installation
 
@@ -184,7 +180,7 @@ This plugin works with `unified` version 6+. It is compatible with `mdx` version
 
 ## Security
 
-Use of `recma-mdx-import-media` does not involve user content so there are no openings for cross-site scripting (XSS) attacks.
+Use of **`recma-mdx-import-media`** does not involve user content so there are no openings for cross-site scripting (XSS) attacks.
 
 ## My Plugins
 
