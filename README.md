@@ -49,13 +49,13 @@ You might run into issues because bundlers like Webpack and Vite don't natively 
 
 ### The list of the tags and attributes that `recma-mdx-import-media` process
 
-+ **`img`** --> **`src`**, **`srcset`**,
-+ **`video`** --> **`src`**, **`poster`**,
-+ **`audio`** --> **`src`**,
-+ **`source`** --> **`src`**, **`srcset`**,
-+ **`embed`** --> **`src`**,
-+ **`track`** --> **`src`**,
-+ **`input[type="image"]`** --> **`src`**,
++ **`img`** --> **`src`**, **`srcset`**
++ **`video`** --> **`src`**, **`poster`**
++ **`audio`** --> **`src`**
++ **`source`** --> **`src`**, **`srcset`**
++ **`embed`** --> **`src`**
++ **`track`** --> **`src`**
++ **`input[type="image"]`** --> **`src`**
 + **`script`** --> **`src`**
 
 **`recma-mdx-import-media`** supports **meta** information (`#hash` and `?querystring`) on the asset path.
