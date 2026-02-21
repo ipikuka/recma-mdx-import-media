@@ -1,6 +1,6 @@
 {
   "name": "recma-mdx-import-media",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Recma plugin to turn media relative paths into import declarations for both markdown and html syntax in MDX",
   "type": "module",
   "main": "./dist/index.js",
